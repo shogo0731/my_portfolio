@@ -1,0 +1,25 @@
+services:
+  web:
+    build:
+      context: ./web/
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./web:/app/web/
+      - node_modules:/app/web/node_modules
+    environment:
+      - WATCHPACK_POLLING=true
+    tty: true
+  
+  api:
+    build:
+      context: ./api/
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api:/app/api/
+    tty: true
+
+
+volumes:
+  node_modules:
