@@ -1,6 +1,38 @@
 import NextIntersectionObserver from "./components/ui/NextIntersectionObserver";
 
 export default function Home() {
+  /* nextjsではdocumentの存在判定が必要　*/
+  if (typeof document !== "undefined") {
+    // Smooth scrolling for navigation links
+    document.querySelectorAll("nav a").forEach((anchor: Element) => {
+      anchor.addEventListener("click", function (e: Event) {
+        e.preventDefault();
+
+        const targetId = anchor.getAttribute("href")?.substring(1);
+
+        if (!targetId) return;
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      });
+    });
+
+    // Navbar background on scroll
+    window.addEventListener("scroll", function () {
+      const nav = document.querySelector("nav");
+      if (nav === null) return;
+
+      if (window.scrollY > 50) {
+        nav.style.background = "rgba(255, 255, 255, 0.98)";
+      } else {
+        nav.style.background = "rgba(255, 255, 255, 0.95)";
+      }
+    });
+  }
   return (
     <div>
       <nav>
@@ -22,7 +54,7 @@ export default function Home() {
 
       <section id="home" className="hero">
         <div className="hero-content">
-          <h1>Your Name</h1>
+          <h1>Shogo Oi</h1>
           <p>Web Developer & Creative Coder</p>
           <a href="#projects" className="cta-button">
             作品を見る

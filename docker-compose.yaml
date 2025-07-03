@@ -10,16 +10,6 @@ services:
     environment:
       - WATCHPACK_POLLING=true
     tty: true
-  
-  api:
-    build:
-      context: ./api/
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./api:/app/api/
-    tty: true
-
 
 volumes:
   node_modules:

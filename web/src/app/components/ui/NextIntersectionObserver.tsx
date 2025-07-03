@@ -15,7 +15,7 @@ export default function NextIntersectionObserver({
 }) {
   const [ref, boundary] = useElementBoundaryObserver(
     rootmargin,
-    thresholdValue,
+    thresholdValue
   ) as [React.RefObject<HTMLDivElement>, boolean];
   const [className, setClassName] = useState(classes);
 
