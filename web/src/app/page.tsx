@@ -1,53 +1,94 @@
+"use client";
+
+import Link from "next/link";
 import NextIntersectionObserver from "./components/ui/NextIntersectionObserver";
 
-export default function Home() {
-  /* nextjsではdocumentの存在判定が必要　*/
-  if (typeof document !== "undefined") {
-    // Smooth scrolling for navigation links
-    document.querySelectorAll("nav a").forEach((anchor: Element) => {
-      anchor.addEventListener("click", function (e: Event) {
-        e.preventDefault();
+// ナビゲーションのリンククリック時のスムーズスクロール
+const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  e.preventDefault();
+  const targetId = e.currentTarget.getAttribute("href")?.substring(1);
 
-        const targetId = anchor.getAttribute("href")?.substring(1);
-
-        if (!targetId) return;
-        const targetElement = document.getElementById(targetId);
-        if (targetElement) {
-          targetElement.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-        }
-      });
+  if (!targetId) return;
+  const targetElement = document.getElementById(targetId);
+  if (targetElement) {
+    targetElement.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
     });
+  }
+};
 
-    // Navbar background on scroll
+export default function Home() {
+  if (typeof window !== "undefined") {
+    
+    // 現在のセクションのナビゲーションリンクを強調
     window.addEventListener("scroll", function () {
       const nav = document.querySelector("nav");
-      if (nav === null) return;
+      if (!nav) return;
 
       if (window.scrollY > 50) {
         nav.style.background = "rgba(255, 255, 255, 0.98)";
+        nav.style.boxShadow = "0 8px 32px rgba(14, 165, 233, 0.15)";
       } else {
         nav.style.background = "rgba(255, 255, 255, 0.95)";
+        nav.style.boxShadow = "0 8px 32px rgba(14, 165, 233, 0.1)";
       }
     });
+
+    // Active nav link highlight
+    function updateActiveNavLink() {
+      const sections = document.querySelectorAll("section");
+      const navLinks = document.querySelectorAll("nav a");
+
+      let currentSection: string | null = "";
+
+      sections.forEach((section) => {
+        const sectionTop = section.offsetTop - 100;
+        const sectionHeight = section.offsetHeight;
+
+        if (
+          window.scrollY >= sectionTop &&
+          window.scrollY < sectionTop + sectionHeight
+        ) {
+          currentSection = section.getAttribute("id");
+        }
+      });
+
+      navLinks.forEach((link) => {
+        link.classList.remove("active");
+        if (link.getAttribute("href") === `#${currentSection}`) {
+          link.classList.add("active");
+        }
+      });
+    }
+
+    window.addEventListener("scroll", updateActiveNavLink);
+    window.addEventListener("load", updateActiveNavLink);
   }
+
   return (
     <div>
       <nav>
         <ul>
           <li>
-            <a href="#home">ホーム</a>
+            <Link href="#home" onClick={handleNavClick}>
+              ホーム
+            </Link>
           </li>
           <li>
-            <a href="#about">自己紹介</a>
+            <Link href="#about" onClick={handleNavClick}>
+              自己紹介
+            </Link>
           </li>
           <li>
-            <a href="#skills">スキル</a>
+            <Link href="#skills" onClick={handleNavClick}>
+              スキル
+            </Link>
           </li>
           <li>
-            <a href="#projects">プロジェクト</a>
+            <Link href="#projects" onClick={handleNavClick}>
+              プロジェクト
+            </Link>
           </li>
         </ul>
       </nav>
