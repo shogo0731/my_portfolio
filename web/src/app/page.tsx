@@ -7,14 +7,13 @@ import { navs, about, skills, projects } from "./const";
 import { useElementBoundaryObserver } from "./customHooks/useElementBoundaryObserver";
 
 // ナビゲーションのリンククリック時のスムーズスクロール
-const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-  e.preventDefault();
-  const targetId = e.currentTarget.getAttribute("href")?.substring(1);
-
-  if (!targetId) return;
-  const targetElement = document.getElementById(targetId);
-  if (targetElement) {
-    targetElement.scrollIntoView({
+const handleNavClick = (
+  event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ref: React.RefObject<HTMLDivElement | null>
+) => {
+  event.preventDefault();
+  if (ref.current) {
+    ref.current.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
@@ -64,6 +63,7 @@ export default function Home() {
     skillBoundary,
     projectBoundary,
   ];
+  const refs = [homeRef, aboutRef, skillRef, projectRef];
 
   return (
     <div>
@@ -80,8 +80,8 @@ export default function Home() {
                       : ""
                   }
                   href={nav.href}
-                  onClick={(e) => {
-                    handleNavClick(e);
+                  onClick={(event) => {
+                    handleNavClick(event, refs[index]);
                     handleHamburgerClick();
                   }}
                 >
@@ -101,18 +101,16 @@ export default function Home() {
         </div>
       </nav>
 
-      <section
-        id="home"
-        className="hero"
-        ref={homeRef as React.RefObject<HTMLDivElement>}
-      >
+      <section id="home" className="hero" ref={homeRef}>
         <div className="hero-content">
           <h1>Shogo Oi</h1>
           <p>Web Developer & Creative Coder</p>
           <Link
             href="#projects"
             className="cta-button"
-            onClick={handleNavClick}
+            onClick={(event) => {
+              handleNavClick(event, refs[3]);
+            }}
           >
             作品を見る
           </Link>

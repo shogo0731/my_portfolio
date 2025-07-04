@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 export function useElementBoundaryObserver(
   rootmargin: string,
   thresholdValue: number
-) {
+): [React.RefObject<HTMLDivElement | null>, string] {
   const ref = useRef<HTMLDivElement>(null);
   const [boundary, setBoundary] = useState("");
 
