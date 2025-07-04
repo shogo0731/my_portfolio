@@ -215,6 +215,7 @@ nav a.active {
 .skill-card {
   background: rgba(255, 255, 255, 0.9);
   padding: 2rem;
+  margin: 2rem auto;
   border-radius: 15px;
   text-align: center;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -339,6 +340,7 @@ nav a.active {
   padding: 2rem;
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  white-space: pre-wrap;
 }
 
 .about-image {
