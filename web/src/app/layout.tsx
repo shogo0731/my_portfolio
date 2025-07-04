@@ -18,7 +18,7 @@ export default function RootLayout({
       <body>
         {children}
         <footer>
-          <p>&copy; 2025 Oi Shogo. All rights reserved.</p>
+          <p>&copy; 2025 Shogo Oi. All rights reserved.</p>
         </footer>
       </body>
     </html>

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import NextIntersectionObserver from "./components/NextIntersectionObserver";
+import { useState } from "react";
 
 // ナビゲーションのリンククリック時のスムーズスクロール
 const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -19,6 +20,15 @@ const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
 };
 
 export default function Home() {
+  const [hamburgerActive, setHamburgerActive] = useState<boolean>(false);
+  const mobileWidth = 768;
+
+  const handleHamburgerClick = () => {
+    if (window.innerWidth <= mobileWidth) {
+      setHamburgerActive(!hamburgerActive);
+    }
+  };
+
   if (typeof window !== "undefined") {
     // 現在のセクションのナビゲーションリンクを強調
     window.addEventListener("scroll", function () {
@@ -77,7 +87,7 @@ export default function Home() {
     モダンなWebテクノロジーを使用して、ユーザーフレンドリーで視覚的に魅力的なWebサイトやアプリケーションを作成しています。
     フロントエンドからバックエンドまで幅広い技術スタックに精通しており、常に新しい技術の学習と実装に取り組んでいます。\n
     クリエイティブな問題解決とコードの品質にこだわり、ユーザーエクスペリエンスを最優先に考えた開発を心がけています。`,
-    image: "profile.jpg"
+    image: "profile.jpg",
   };
 
   const skills = [
@@ -96,6 +106,11 @@ export default function Home() {
       description: "UI/UX Design, Figma, Adobe XD, Responsive Design",
       icon: "🎨",
     },
+    {
+      title: "ツール",
+      description: "Git, Docker, AWS, Webpack, Sass",
+      icon: "🔧",
+    },
   ];
 
   const projects = [
@@ -113,24 +128,44 @@ export default function Home() {
   return (
     <div>
       <nav>
-        <ul>
-          {navs.map((nav, index) => (
-            <li key={index}>
-              <Link href={nav.href} onClick={handleNavClick}>
-                {nav.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <div className="nav-container">
+          <ul className={hamburgerActive ? "nav-menu active" : "nav-menu"}>
+            {navs.map((nav, index) => (
+              <li key={index}>
+                <Link
+                  href={nav.href}
+                  onClick={(e) => {
+                    handleNavClick(e);
+                    handleHamburgerClick();
+                  }}
+                >
+                  {nav.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <div
+            className={hamburgerActive ? "hamburger active" : "hamburger"}
+            onClick={handleHamburgerClick}
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
       </nav>
 
       <section id="home" className="hero">
         <div className="hero-content">
           <h1>Shogo Oi</h1>
           <p>Web Developer & Creative Coder</p>
-          <a href="#projects" className="cta-button">
+          <Link
+            href="#projects"
+            className="cta-button"
+            onClick={handleNavClick}
+          >
             作品を見る
-          </a>
+          </Link>
         </div>
       </section>
 
