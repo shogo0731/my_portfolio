@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import NextIntersectionObserver from "./components/NextIntersectionObserver";
+import ElementFadeIn from "./components/ElementFadeIn";
 import { useState } from "react";
+import { navs, about, skills, projects } from "./const";
+import { useElementBoundaryObserver } from "./customHooks/useElementBoundaryObserver";
 
 // ナビゲーションのリンククリック時のスムーズスクロール
 const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -22,6 +24,8 @@ const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
 export default function Home() {
   const [hamburgerActive, setHamburgerActive] = useState<boolean>(false);
   const mobileWidth = 768;
+  const fadeInRootMargin = "0px 0px -50px 0px";
+  const fadeInThresholdValue = 0.2;
 
   const handleHamburgerClick = () => {
     if (window.innerWidth <= mobileWidth) {
@@ -29,100 +33,36 @@ export default function Home() {
     }
   };
 
+  // ビューポートの高さの25%を計算
+  let quarterHeight;
   if (typeof window !== "undefined") {
-    // 現在のセクションのナビゲーションリンクを強調
-    window.addEventListener("scroll", function () {
-      const nav = document.querySelector("nav");
-      if (!nav) return;
-
-      if (window.scrollY > 50) {
-        nav.style.background = "rgba(255, 255, 255, 0.98)";
-        nav.style.boxShadow = "0 8px 32px rgba(14, 165, 233, 0.15)";
-      } else {
-        nav.style.background = "rgba(255, 255, 255, 0.95)";
-        nav.style.boxShadow = "0 8px 32px rgba(14, 165, 233, 0.1)";
-      }
-    });
-
-    // Active nav link highlight
-    function updateActiveNavLink() {
-      const sections = document.querySelectorAll("section");
-      const navLinks = document.querySelectorAll("nav a");
-
-      let currentSection: string | null = "";
-
-      sections.forEach((section) => {
-        const sectionTop = section.offsetTop - 100;
-        const sectionHeight = section.offsetHeight;
-
-        if (
-          window.scrollY >= sectionTop &&
-          window.scrollY < sectionTop + sectionHeight
-        ) {
-          currentSection = section.getAttribute("id");
-        }
-      });
-
-      navLinks.forEach((link) => {
-        link.classList.remove("active");
-        if (link.getAttribute("href") === `#${currentSection}`) {
-          link.classList.add("active");
-        }
-      });
-    }
-
-    window.addEventListener("scroll", updateActiveNavLink);
-    window.addEventListener("load", updateActiveNavLink);
+    quarterHeight = window.innerHeight * 0.25;
   }
 
-  const navs = [
-    { label: "ホーム", href: "#home" },
-    { label: "自己紹介", href: "#about" },
-    { label: "スキル", href: "#skills" },
-    { label: "プロジェクト", href: "#projects" },
-  ];
-
-  const about = {
-    description: `こんにちは！私は情熱的なWeb開発者です。\n
-    モダンなWebテクノロジーを使用して、ユーザーフレンドリーで視覚的に魅力的なWebサイトやアプリケーションを作成しています。
-    フロントエンドからバックエンドまで幅広い技術スタックに精通しており、常に新しい技術の学習と実装に取り組んでいます。\n
-    クリエイティブな問題解決とコードの品質にこだわり、ユーザーエクスペリエンスを最優先に考えた開発を心がけています。`,
-    image: "profile.jpg",
-  };
-
-  const skills = [
-    {
-      title: "フロントエンド",
-      description: "HTML5, CSS3, JavaScript, React, Vue.js, TypeScript",
-      icon: "🌐",
-    },
-    {
-      title: "バックエンド",
-      description: "Node.js, Python, PHP, MySQL, PostgreSQL",
-      icon: "⚙️",
-    },
-    {
-      title: "デザイン",
-      description: "UI/UX Design, Figma, Adobe XD, Responsive Design",
-      icon: "🎨",
-    },
-    {
-      title: "ツール",
-      description: "Git, Docker, AWS, Webpack, Sass",
-      icon: "🔧",
-    },
-  ];
-
-  const projects = [
-    {
-      title: "モダンEコマースプラットフォーム",
-      description:
-        "React.jsとNode.jsを使用したフルスタックのEコマースサイト。決済機能、商品管理、ユーザー管理を実装。",
-      tech: ["React", "Node.js", "MongoDB", "Stripe"],
-      image: "ecommerce.jpg",
-      liveDemo: "#",
-      github: "#",
-    },
+  // Intersection ObserverのrootMarginを設定
+  const rootMargin = `-${quarterHeight}px 0px -${quarterHeight}px 0px`;
+  const thresholdValue = 0;
+  const [homeRef, homeBoundary] = useElementBoundaryObserver(
+    rootMargin,
+    thresholdValue
+  );
+  const [aboutRef, aboutBoundary] = useElementBoundaryObserver(
+    rootMargin,
+    thresholdValue
+  );
+  const [skillRef, skillBoundary] = useElementBoundaryObserver(
+    rootMargin,
+    thresholdValue
+  );
+  const [projectRef, projectBoundary] = useElementBoundaryObserver(
+    rootMargin,
+    thresholdValue
+  );
+  const boundaries = [
+    homeBoundary,
+    aboutBoundary,
+    skillBoundary,
+    projectBoundary,
   ];
 
   return (
@@ -133,6 +73,12 @@ export default function Home() {
             {navs.map((nav, index) => (
               <li key={index}>
                 <Link
+                  className={
+                    boundaries[index] === "topIn" ||
+                    boundaries[index] === "bottomIn"
+                      ? "active"
+                      : ""
+                  }
                   href={nav.href}
                   onClick={(e) => {
                     handleNavClick(e);
@@ -155,7 +101,11 @@ export default function Home() {
         </div>
       </nav>
 
-      <section id="home" className="hero">
+      <section
+        id="home"
+        className="hero"
+        ref={homeRef as React.RefObject<HTMLDivElement>}
+      >
         <div className="hero-content">
           <h1>Shogo Oi</h1>
           <p>Web Developer & Creative Coder</p>
@@ -169,11 +119,15 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="about" className="section">
+      <section
+        id="about"
+        className="section"
+        ref={aboutRef as React.RefObject<HTMLDivElement>}
+      >
         <h2>{navs[1].label}</h2>
-        <NextIntersectionObserver
-          rootmargin="0px 0px -50px 0px"
-          thresholdValue={0.1}
+        <ElementFadeIn
+          rootmargin={fadeInRootMargin}
+          thresholdValue={fadeInThresholdValue}
           classes="about-content fade-in"
         >
           <div className="about-text">
@@ -182,32 +136,40 @@ export default function Home() {
           <div className="about-image">
             <span>{about.image}</span>
           </div>
-        </NextIntersectionObserver>
+        </ElementFadeIn>
       </section>
 
-      <section id="skills" className="section">
+      <section
+        id="skills"
+        className="section"
+        ref={skillRef as React.RefObject<HTMLDivElement>}
+      >
         <h2>{navs[2].label}</h2>
         {skills.map((skill, index) => (
-          <NextIntersectionObserver
-            rootmargin="0px 0px -50px 0px"
-            thresholdValue={0.1}
+          <ElementFadeIn
+            rootmargin={fadeInRootMargin}
+            thresholdValue={fadeInThresholdValue}
             classes="skill-card fade-in"
             key={index}
           >
             <div className="skill-icon">{skill.icon}</div>
             <h3>{skill.title}</h3>
             <p>{skill.description}</p>
-          </NextIntersectionObserver>
+          </ElementFadeIn>
         ))}
       </section>
 
-      <section id="projects" className="section">
+      <section
+        id="projects"
+        className="section"
+        ref={projectRef as React.RefObject<HTMLDivElement>}
+      >
         <h2>{navs[3].label}</h2>
         <div className="projects-grid">
           {projects.map((project, index) => (
-            <NextIntersectionObserver
-              rootmargin="0px 0px -50px 0px"
-              thresholdValue={0.1}
+            <ElementFadeIn
+              rootmargin={fadeInRootMargin}
+              thresholdValue={fadeInThresholdValue}
               classes="project-card fade-in"
               key={index}
             >
@@ -233,7 +195,7 @@ export default function Home() {
                   </a>
                 </div>
               </div>
-            </NextIntersectionObserver>
+            </ElementFadeIn>
           ))}
         </div>
       </section>

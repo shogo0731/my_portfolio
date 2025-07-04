@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useElementBoundaryObserver } from "@/app/customHooks/useElementBoundaryObserver";
-export default function NextIntersectionObserver({
+import { useElementBoundaryObserver } from "../customHooks/useElementBoundaryObserver";
+export default function ElementFadeIn({
   children,
   rootmargin,
   thresholdValue,
@@ -16,11 +16,11 @@ export default function NextIntersectionObserver({
   const [ref, boundary] = useElementBoundaryObserver(
     rootmargin,
     thresholdValue
-  ) as [React.RefObject<HTMLDivElement>, boolean];
+  ) as [React.RefObject<HTMLDivElement>, string];
   const [className, setClassName] = useState(classes);
 
   useEffect(() => {
-    if (boundary) {
+    if (boundary === "bottomIn") {
       setClassName(`${classes} visible`);
     }
   }, [boundary, classes]);

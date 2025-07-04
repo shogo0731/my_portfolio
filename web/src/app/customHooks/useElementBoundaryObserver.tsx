@@ -2,22 +2,29 @@ import { useState, useEffect, useRef } from "react";
 
 export function useElementBoundaryObserver(
   rootmargin: string,
-  thresholdValue: number,
+  thresholdValue: number
 ) {
   const ref = useRef<HTMLDivElement>(null);
-  const [boundary, setBoundary] = useState<boolean>(false);
+  const [boundary, setBoundary] = useState("");
 
   useEffect(() => {
     const currentRef = ref.current;
     const observerOptions = {
+      root: null,
       rootMargin: rootmargin,
       threshold: thresholdValue,
     };
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setBoundary(true);
+        const rect = entry.boundingClientRect;
+
+        if (rect.y <= 0) {
+          setBoundary(entry.isIntersecting ? "topIn" : "topOut");
+        } else if (entry.isIntersecting && rect.y > 0) {
+          setBoundary("bottomIn");
+        } else {
+          setBoundary("bottomOut");
         }
       });
     }, observerOptions);
@@ -26,7 +33,6 @@ export function useElementBoundaryObserver(
       observer.observe(currentRef);
     }
 
-    /* クリーンアップ関数　*/
     return () => {
       if (currentRef) {
         observer.unobserve(currentRef);
