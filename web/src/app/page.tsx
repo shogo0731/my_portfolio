@@ -143,18 +143,20 @@ export default function Home() {
         ref={skillRef as React.RefObject<HTMLDivElement>}
       >
         <h2>{navs[2].label}</h2>
-        {skills.map((skill, index) => (
-          <ElementFadeIn
-            rootmargin={fadeInRootMargin}
-            thresholdValue={fadeInThresholdValue}
-            classes="skill-card fade-in"
-            key={index}
-          >
-            <div className="skill-icon">{skill.icon}</div>
-            <h3>{skill.title}</h3>
-            <p>{skill.description}</p>
-          </ElementFadeIn>
-        ))}
+        <div className="skills-grid">
+          {skills.map((skill, index) => (
+            <ElementFadeIn
+              rootmargin={fadeInRootMargin}
+              thresholdValue={fadeInThresholdValue}
+              classes="skill-card fade-in"
+              key={index}
+            >
+              <div className="skill-icon">{skill.icon}</div>
+              <h3>{skill.title}</h3>
+              <p>{skill.description}</p>
+            </ElementFadeIn>
+          ))}
+        </div>
       </section>
 
       <section
