@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import ElementFadeIn from "./components/ElementFadeIn";
 import { useState } from "react";
 import { navs, about, skills, projects } from "./const";
@@ -18,6 +19,14 @@ const handleNavClick = (
       block: "start",
     });
   }
+};
+
+const handleSeparateTabOpen = (
+  event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  href: string
+) => {
+  event.preventDefault();
+  window.open(href, "_blank");
 };
 
 export default function Home() {
@@ -174,7 +183,17 @@ export default function Home() {
               key={index}
             >
               <div className="project-image">
-                <span>{project.image}</span>
+                {/* <span> */}
+                <Image
+                  src={project.image}
+                  alt={project.title}
+                  width={0}
+                  height={0}
+                  sizes="100%"
+                  style={{ width: "100%", height: "auto" }}
+                  unoptimized={true}
+                />
+                {/* </span> */}
               </div>
               <div className="project-content">
                 <h3 className="project-title">{project.title}</h3>
@@ -187,10 +206,22 @@ export default function Home() {
                   ))}
                 </div>
                 <div className="project-links">
-                  <a href={project.liveDemo} className="project-link">
+                  <a
+                    href={project.liveDemo}
+                    className="project-link"
+                    onClick={(event) => {
+                      handleSeparateTabOpen(event, project.liveDemo);
+                    }}
+                  >
                     ライブデモ →
                   </a>
-                  <a href={project.github} className="project-link">
+                  <a
+                    href={project.github}
+                    className="project-link"
+                    onClick={(event) => {
+                      handleSeparateTabOpen(event, project.github);
+                    }}
+                  >
                     GitHub →
                   </a>
                 </div>

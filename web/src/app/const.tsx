@@ -6,44 +6,51 @@ export const navs = [
 ];
 
 export const about = {
-  description: `こんにちは！私は情熱的なWeb開発者です。\n
-    モダンなWebテクノロジーを使用して、ユーザーフレンドリーで視覚的に魅力的なWebサイトやアプリケーションを作成しています。
-    フロントエンドからバックエンドまで幅広い技術スタックに精通しており、常に新しい技術の学習と実装に取り組んでいます。\n
-    クリエイティブな問題解決とコードの品質にこだわり、ユーザーエクスペリエンスを最優先に考えた開発を心がけています。`,
+  description: `初めまして、大井祥伍です。
+私はWeb技術として、フロントエンドとバックエンドの両方に興味を持っています。
+特に、ReactやNext.jsを使用したフロントエンド開発と、Node.jsやDjangoを使用したバックエンド開発経験があります。
+最近はAI技術にも興味を持ち、pythonを使ったAIモデル構築をしたり、Web開発にAIを取り入れてたりしています。`,
   image: "profile.jpg",
 };
 
 export const skills = [
   {
     title: "フロントエンド",
-    description: "HTML5, CSS3, JavaScript, React, Vue.js, TypeScript",
+    description:
+      "HTML5, CSS3, JavaScript, TypeScript, React, Next.js, Dart, Flutter",
     icon: "🌐",
   },
   {
     title: "バックエンド",
-    description: "Node.js, Python, PHP, MySQL, PostgreSQL",
+    description:
+      "Node.js, Python, Django, Go, MySQL, PostgreSQL, SQLite, MongoDB",
     icon: "⚙️",
   },
   {
     title: "デザイン",
-    description: "UI/UX Design, Figma, Adobe XD, Responsive Design",
+    description: "Figma, Tailwind CSS, Bootstrap",
     icon: "🎨",
   },
   {
+    title: "クラウド",
+    description: "AWS, GCP, Firebase, Vercel",
+    icon: "☁️",
+  },
+  {
     title: "ツール",
-    description: "Git, Docker, AWS, Webpack, Sass",
+    description: "Git, Docker",
     icon: "🔧",
   },
 ];
 
 export const projects = [
   {
-    title: "モダンEコマースプラットフォーム",
+    title: "mentaAI",
     description:
-      "React.jsとNode.jsを使用したフルスタックのEコマースサイト。決済機能、商品管理、ユーザー管理を実装。",
-    tech: ["React", "Node.js", "MongoDB", "Stripe"],
-    image: "ecommerce.jpg",
-    liveDemo: "#",
-    github: "#",
+      "AIを活用したメンタルヘルス支援アプリ。睡眠時間や体調を管理し、それらの情報を基にAIモデルと会話できる機能がある。",
+    tech: ["Dart", "Flutter", "Go", "Firebase", "GCP"],
+    image: "/project/mentaAI.png",
+    liveDemo: "https://health-care-app-3e333.web.app/",
+    github: "https://github.com/health-Care-App/health_care_app",
   },
 ];

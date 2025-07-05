@@ -304,7 +304,6 @@ nav {
 }
 
 .project-image {
-  height: 200px;
   background: linear-gradient(45deg, #0ea5e9, #06b6d4);
   display: flex;
   align-items: center;
@@ -316,6 +315,7 @@ nav {
 
 .project-content {
   padding: 1.5rem;
+  background-color: white;
 }
 
 .project-title {
