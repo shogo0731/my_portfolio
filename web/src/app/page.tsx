@@ -183,7 +183,6 @@ export default function Home() {
               key={index}
             >
               <div className="project-image">
-                {/* <span> */}
                 <Image
                   src={project.image}
                   alt={project.title}
@@ -193,7 +192,6 @@ export default function Home() {
                   style={{ width: "100%", height: "auto" }}
                   unoptimized={true}
                 />
-                {/* </span> */}
               </div>
               <div className="project-content">
                 <h3 className="project-title">{project.title}</h3>
