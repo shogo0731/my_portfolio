@@ -1,19 +1,50 @@
-export const navs = [
+export type Nav = {
+ label: string,
+ href : string
+};
+
+export type Navs = Nav[];
+
+export type About = {
+  description: string,
+  image: string
+}
+
+export type Skill = {
+  title: string,
+  description: string,
+  icon: string
+}
+
+export type Skills = Skill[];
+
+export type Project = {
+    title: string;
+    description: string;
+    tech: string[];
+    image: string;
+    liveDemo: string;
+    github: string;
+}
+
+export type Projects = Project[];
+
+export const navs: Navs = [
   { label: "ホーム", href: "#home" },
   { label: "自己紹介", href: "#about" },
   { label: "スキル", href: "#skills" },
   { label: "プロジェクト", href: "#projects" },
 ];
 
-export const about = {
+export const about: About = {
   description: `初めまして、大井祥伍です。
 私はWeb技術として、フロントエンドとバックエンドの両方に興味を持っています。
 特に、ReactやNext.jsを使用したフロントエンド開発と、Node.jsやDjangoを使用したバックエンド開発経験があります。
 最近はAI技術にも興味を持ち、pythonを使ったAIモデル構築をしたり、Web開発にAIを取り入れてたりしています。`,
-  image: "profile.jpg",
+  image: "",
 };
 
-export const skills = [
+export const skills: Skills = [
   {
     title: "フロントエンド",
     description:
@@ -43,7 +74,7 @@ export const skills = [
   },
 ];
 
-export const projects = [
+export const projects: Projects = [
     {
     title: "my-portfolio",
     description: "このポートフォリオサイト自体です。",
