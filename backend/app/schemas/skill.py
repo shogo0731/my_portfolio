@@ -1,6 +1,5 @@
 from uuid import UUID
-from sqlmodel import SQLModel
-
+from sqlmodel import SQLModel, Field
 
 class SkillBase(SQLModel):
     skill_id: UUID
@@ -14,5 +13,11 @@ class SkillCreate(SkillBase):
 class SkillUpdate(SkillBase):
     pass
 
-class Skill(SkillBase, table=True):
+class SkillPublic(SkillBase):
     pass
+
+class SKillsPublic(SQLModel):
+    data: list[SkillPublic]
+
+class Skill(SkillBase, table=True):
+    skill_id: UUID = Field(primary_key=True, default=None)

@@ -18,6 +18,12 @@ class ProjectCreate(ProjectBase):
 class ProjectUpdate(ProjectBase):
     pass
 
+class ProjectPublic(ProjectBase):
+    pass
+
+class ProjectsPublic(SQLModel):
+    data: list[ProjectPublic]
+
 class Project(ProjectBase, table=True):
     project_id: UUID = Field(primary_key=True, defualt=None)
     teches: List[Tech] = Relationship(back_populates='project')

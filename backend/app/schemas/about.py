@@ -9,12 +9,16 @@ class AboutBase(SQLModel):
     description: str
     image_path: Optional[NewPath] = None
 
-# postのレスポンスの型
+# postのリクエストボディの型
 class AboutCreate(AboutBase):
     pass
 
-# putのレスポンスの型
+# putのリクエストボディの型
 class AboutUpdate(AboutBase):
+    pass
+
+# getのレスポンスの型
+class AboutPublic(AboutBase):
     pass
 
 # データベースのAboutテーブルの型

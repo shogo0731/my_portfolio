@@ -1,41 +1,41 @@
-import enum
-from typing import Any, Optional
-from pydantic import PostgresDsn, ValidationInfo, field_validator
-from pydantic_settings import BaseSettings
-
-
-class AppEnvironment(str, enum.Enum):
-    DEVELOP = "development"
-    PRODUCTION = "production"
-
+from typing import Literal
+from pydantic import PostgresDsn, computed_field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    ENVIRONMENT: AppEnvironment
+    model_config = SettingsConfigDict(
+        # envファイルの場所
+        env_file='../../.env',
+        env_file_encoding='utf-8',
+        
+        # このクラスにない環境変数の読み込み時、エラーを発生させない
+        extra='ignore'
+    )
 
+    ENVIRONMENT: Literal["development", "production"] = "development"
+
+    #エンドポイントのprefix
     API_V1_STR: str = "/api/v1"
-    PROJECT_NAME: str = "My_Portfolio"
+    FRONTEND_HOST: str = "http://localhost:3000"
 
+    PROJECT_NAME: str = "My_Portfolio"
     POSTGRES_SERVER: str
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
     POSTGRES_PORT: str
-    SQLALCHEMY_DATABASE_URI: Optional[str] = None
-
-    @field_validator("SQLALCHEMY_DATABASE_URI", mode="after")
-    def assemble_db_connection(cls, v: Optional[str], values: ValidationInfo) -> Any:
-        if isinstance(v, str):
-            return v
-        
-        return str(
-            PostgresDsn.build(
-                scheme="postgresql",
-                username=values.data.get("POSTGRES_USER"),
-                password=values.data.get("POSTGRES_PASSWORD"),
-                host=values.data.get("POSTGRES_SERVER"),
-                port=int(values.data.get("POSTGRES_PORT")),
-                path=f"{values.data.get('POSTGRES_DB') or ''}",
-            )
+    
+    # SQLALCHEMY_DATABASE_URIを他フィールドから作成する
+    @computed_field
+    @property
+    def SQLALCHEMY_DATABASE_URI(self):
+        return PostgresDsn.build(
+            scheme="postgresql+psycopg",
+            username=self.POSTGRES_USER,
+            password=self.POSTGRES_PASSWORD,
+            host=self.POSTGRES_SERVER,
+            port=self.POSTGRES_PORT,
+            path=self.POSTGRES_DB,
         )
 
 settings = Settings()
