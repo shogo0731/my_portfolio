@@ -1,1 +1,0 @@
-#SQLAlchemyのモデル定義

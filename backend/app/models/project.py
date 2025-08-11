@@ -1,6 +1,6 @@
 #projectテーブルの型定義
 
-from sqlalchemy import Column, String
+from sqlmodel import Column, String
 from app.db.base_class import Base
 
 class Project(Base):

@@ -4,16 +4,11 @@ import Image from "next/image";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { SessionProvider, useSession, signIn } from "next-auth/react";
 import {
-  navs,
   about,
   skills,
   projects,
-  Nav,
-  Navs,
   About,
-  Skill,
   Skills,
-  Project,
   Projects,
 } from "@/app/const";
 import "./admin.css";

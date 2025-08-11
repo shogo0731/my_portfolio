@@ -1,6 +1,15 @@
 from fastapi import FastAPI
-from api.api import api_router
+from app.api.main import api_router
+from app.core.db import init_db
 
 app = FastAPI()
 
-app.include_router(api_router)
+def init():
+    init_db()
+
+def main():
+    init()
+    app.include_router(api_router)
+
+if __name__ == "__main__":
+    main()
