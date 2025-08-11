@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status
-from app.schemas.about import About, AboutCreate, AboutUpdate
+from app.models.about import About, AboutCreate, AboutUpdate
 
 router = APIRouter()
 

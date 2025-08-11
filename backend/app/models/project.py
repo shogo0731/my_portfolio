@@ -1,12 +1,29 @@
-#projectテーブルの型定義
+from typing import Optional, List
+from uuid import UUID
+from pydantic import NewPath, HttpUrl
+from sqlmodel import SQLModel, Field, Relationship
+from app.models.tech import Tech
 
-from sqlmodel import Column, String
-from app.db.base_class import Base
+class ProjectBase(SQLModel):
+    project_id: UUID
+    title: str
+    description: str
+    image_path: Optional[NewPath] = None
+    live_demo_url: Optional[HttpUrl] = None
+    github_url: Optional[HttpUrl] = None
 
-class Project(Base):
-    project_id = Column(String, primary_key=True, nullable=False, unique=True)
-    title = Column(String, nullable=False, unique=True)
-    description = Column(String, nullable=False, unique=True)
-    image_path = Column(String, nullable=True, unique=True)
-    live_demo_url = Column(String, nullable=True, unique=True)
-    github_url = Column(String, nullable=True, unique=True)
+class ProjectCreate(ProjectBase):
+    pass
+
+class ProjectUpdate(ProjectBase):
+    pass
+
+class ProjectPublic(ProjectBase):
+    pass
+
+class ProjectsPublic(SQLModel):
+    data: list[ProjectPublic]
+
+class Project(ProjectBase, table=True):
+    project_id: UUID = Field(primary_key=True, defualt=None)
+    teches: List[Tech] = Relationship(back_populates='project')

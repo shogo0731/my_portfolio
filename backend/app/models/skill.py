@@ -1,10 +1,23 @@
-#skillテーブルの型定義
+from uuid import UUID
+from sqlmodel import SQLModel, Field
 
-from sqlmodel import Column, String
-from app.db.base_class import Base
+class SkillBase(SQLModel):
+    skill_id: UUID
+    title: str
+    description: str
+    icon: str
 
-class Skill(Base):
-    skill_id = Column(String, primary_key=True, nullable=False, unique=True)
-    title = Column(String, nullable=False, unique=True)
-    description = Column(String, nullable=False, unique=True)
-    icon = Column(String, nullable=False, unique=True)
+class SkillCreate(SkillBase):
+    pass
+
+class SkillUpdate(SkillBase):
+    pass
+
+class SkillPublic(SkillBase):
+    pass
+
+class SKillsPublic(SQLModel):
+    data: list[SkillPublic]
+
+class Skill(SkillBase, table=True):
+    skill_id: UUID = Field(primary_key=True, default=None)

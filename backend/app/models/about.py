@@ -1,16 +1,26 @@
-#aboutテーブルの型定義
+from typing import Optional
+from uuid import UUID
+from pydantic import NewPath
+from sqlmodel import SQLModel, Field
 
-from sqlmodel import Column, String
-from app.db.base_class import Base
+# Aboutの基底クラス
+class AboutBase(SQLModel):
+    about_id: UUID
+    description: str
+    image_path: Optional[NewPath] = None
 
-# Columの引数
-# primary_key: 主キーかどうか
-# autoincrement: インクリメントをするかどうか
-# server_default: デフォルト値を設定する
-# nullable: nullを許可するかどうか。
-# unique: テーブルで一意な値かどうか。Trueで重複を禁止。
+# postのリクエストボディの型
+class AboutCreate(AboutBase):
+    pass
 
-class About(Base):
-    about_id = Column(String, primary_key=True, nullable=False, unique=True)
-    description = Column(String, nullable=False, unique=False)
-    image_path = Column(String, nullable=True, unique=False)
+# putのリクエストボディの型
+class AboutUpdate(AboutBase):
+    pass
+
+# getのレスポンスの型
+class AboutPublic(AboutBase):
+    pass
+
+# データベースのAboutテーブルの型
+class About(AboutBase, table=True):
+    about_id: UUID = Field(primary_key=True, default=None)

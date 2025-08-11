@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status
-from app.schemas.skill import Skill, SkillCreate, SkillUpdate
+from app.models.skill import Skill, SkillCreate, SkillUpdate
 
 router = APIRouter()
 

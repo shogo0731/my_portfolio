@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status
-from app.schemas.project import Project, ProjectCreate, ProjectUpdate
+from app.models.project import Project, ProjectCreate, ProjectUpdate
 
 router = APIRouter()
 

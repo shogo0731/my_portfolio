@@ -8,11 +8,8 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
 
-def init():
-    init_db()
-
 def main():
-    init()
+    init_db()
     
     # prefixによって/api/v1/... がエンドポイントとなる
     app.include_router(api_router, prefix=settings.API_V1_STR)
