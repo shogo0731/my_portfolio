@@ -1,11 +1,10 @@
 from typing import Optional
-from uuid import UUID
+from uuid import UUID, uuid4
 from pydantic import NewPath
 from sqlmodel import SQLModel, Field
 
 # Aboutの基底クラス
 class AboutBase(SQLModel):
-    about_id: UUID
     description: str
     image_path: Optional[NewPath] = None
 
@@ -19,8 +18,10 @@ class AboutUpdate(AboutBase):
 
 # getのレスポンスの型
 class AboutPublic(AboutBase):
-    pass
+    about_id: UUID = Field(default_factory=lambda: str(uuid4()), primary_key=True)
 
 # データベースのAboutテーブルの型
 class About(AboutBase, table=True):
-    about_id: UUID = Field(primary_key=True, default=None)
+    about_id: UUID = Field(default_factory=lambda: str(uuid4()), primary_key=True)
+    image_path: Optional[str] = None
+    

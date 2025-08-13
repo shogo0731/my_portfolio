@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         # envファイルの場所
-        env_file='../../.env',
+        env_file='.env',
         env_file_encoding='utf-8',
         
         # このクラスにない環境変数の読み込み時、エラーを発生させない
@@ -23,14 +23,14 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
-    POSTGRES_PORT: str
+    POSTGRES_PORT: int 
     
     # SQLALCHEMY_DATABASE_URIを他フィールドから作成する
-    @computed_field
+    @computed_field()
     @property
-    def SQLALCHEMY_DATABASE_URI(self):
+    def SQLALCHEMY_DATABASE_URI(self) -> PostgresDsn:
         return PostgresDsn.build(
-            scheme="postgresql+psycopg",
+            scheme="postgresql+psycopg2",
             username=self.POSTGRES_USER,
             password=self.POSTGRES_PASSWORD,
             host=self.POSTGRES_SERVER,

@@ -18,9 +18,12 @@ services:
     volumes:
       - ./backend:/backend
     tty: true
+    depends_on:
+      - db
   
   db:
     image: postgres:14
+    container_name: postgres-db
     ports:
     - "5432:5432"
     volumes:

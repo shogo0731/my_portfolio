@@ -1,5 +1,8 @@
 fastapi
 sqlmodel
 uvicorn
+alembic
 pydantic-settings
 psycopg2-binary
+python-dotenv
+python-multipart
