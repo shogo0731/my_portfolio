@@ -88,7 +88,7 @@ class SkillPublic(SkillBase):
                            primary_key=True)
 
 
-class SKillsPublic(SQLModel):
+class SkillsPublic(SQLModel):
     data: list[SkillPublic]
 
 
@@ -108,3 +108,8 @@ class Tech(TechBase, table=True):
                              default=None,
                              ondelete="CASCADE")
     project: "Project" = Relationship(back_populates='techs')
+
+
+# apiのレスポンス用に定義
+class Message(SQLModel):
+    messsage: str

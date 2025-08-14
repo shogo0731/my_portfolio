@@ -3,6 +3,7 @@ from fastapi import HTTPException, status
 from app.models import (Project, ProjectCreate, ProjectsPublic, ProjectPublic,
                         ProjectUpdate)
 from app.models import Tech
+from app.utils import err_mes_item_with_id_not_found
 
 
 def read_project(session: Session, project_id=None):
@@ -10,8 +11,15 @@ def read_project(session: Session, project_id=None):
         project: ProjectPublic = session.get(Project, project_id)
         if not project:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                detail=f"project: {project_id} not found")
-        return project
+                                detail=err_mes_item_with_id_not_found(
+                                    Project.__tablename__, project_id))
+        return ProjectPublic(project_id=project.project_id,
+                             title=project.title,
+                             description=project.description,
+                             image_path=project.image_path,
+                             live_demo_url=project.live_demo_url,
+                             github_url=project.github_url,
+                             techs=project.techs)
 
     statement = select(Project)
     projects = session.exec(statement).all()
@@ -51,7 +59,9 @@ def update_project(session: Session, old_project: Project,
 def delete_project(session: Session, project_id: str) -> None:
     project = session.get(Project, project_id)
     if not project:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=err_mes_item_with_id_not_found(
+                                Project.__tablename__, project_id))
     session.delete(project)
     session.commit()
     return

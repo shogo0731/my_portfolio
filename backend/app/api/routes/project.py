@@ -1,10 +1,11 @@
 import os
 from glob import glob
 from fastapi import APIRouter, status, Form, UploadFile, HTTPException
-from app.models import (Project, ProjectsPublic, ProjectPublic, ProjectCreate,
-                        ProjectUpdate)
+from app.models import (Message, Project, ProjectsPublic, ProjectPublic,
+                        ProjectCreate, ProjectUpdate)
 from app.crud import project as crud_project
 from app.api.deps import SessionDep
+from app.utils import err_mes_item_with_id_not_found, mes_delete_success
 
 router = APIRouter(prefix="/project", tags=["project"])
 
@@ -18,7 +19,7 @@ async def read_project(session: SessionDep):
 @router.get("/{project_id}",
             response_model=ProjectPublic,
             status_code=status.HTTP_200_OK)
-async def read_project_with_id(project_id: str, session: SessionDep):
+async def read_project_with_id(session: SessionDep, project_id: str):
     new_projects = crud_project.read_project(session, project_id)
     return new_projects
 
@@ -38,17 +39,22 @@ async def update_project(session: SessionDep, project_id: str,
                          project_in: ProjectUpdate):
     old_project = session.get(Project, project_id)
     if not old_project:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=err_mes_item_with_id_not_found(
+                                Project.__tablename__, project_id))
 
     updated_project = crud_project.update_project(session, old_project,
                                                   project_in)
     return updated_project
 
 
-@router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_project(project_id: str, session: SessionDep):
+@router.delete("/{project_id}",
+               response_model=Message,
+               status_code=status.HTTP_204_NO_CONTENT)
+async def delete_project(session: SessionDep, project_id: str):
     crud_project.delete_project(session, project_id)
-    return {"message": "project deleted successfully"}
+    return Message(
+        message=mes_delete_success(Project.__tablename__, project_id))
 
 
 @router.post("/{project_id}/image",
@@ -103,7 +109,9 @@ async def update_project_image(session: SessionDep,
     return old_project
 
 
-@router.delete("/{project_id}/image", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{project_id}/image",
+               response_model=Message,
+               status_code=status.HTTP_204_NO_CONTENT)
 async def delete_project_image(session: SessionDep, project_id: str):
     # project_idから該当ファイルを取得
     img_pattern = f'./uploads/image/project/{project_id}.*'
@@ -131,4 +139,4 @@ async def delete_project_image(session: SessionDep, project_id: str):
     session.add(old_project)
     session.commit()
     session.refresh(old_project)
-    return {"message": "deleted project image successfully"}
+    return Message(message=mes_delete_success("project image", project_id))
