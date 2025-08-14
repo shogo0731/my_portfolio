@@ -1,6 +1,6 @@
 import os
 from fastapi import APIRouter, status, Form, UploadFile
-from app.models.about import AboutPublic, AboutCreate, AboutUpdate
+from app.models import AboutPublic, AboutCreate, AboutUpdate
 from app.api.deps import SessionDep
 from app.crud import about as crud_about
 

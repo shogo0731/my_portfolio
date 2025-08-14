@@ -6,7 +6,7 @@ COPY ./requirements.txt /backend/requirements.txt
 
 # --no-cache-dir: キャッシュを利用しない
 # --upgrade: pipのアップグレード
-RUN pip install --no-cache-dir --upgrade -r /backend/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 COPY ./ /backend
 

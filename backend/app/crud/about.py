@@ -1,5 +1,5 @@
 from sqlmodel import Session, select
-from app.models.about import About, AboutCreate, AboutUpdate
+from app.models import About, AboutCreate
 from fastapi import HTTPException, status
 
 

@@ -5,6 +5,14 @@ from sqlalchemy import pool
 
 from alembic import context
 
+# 追記
+from app.core.config import settings
+from app.models.about import About
+from app.models.project import Project
+from app.models.skill import Skill
+from app.models.tech import Tech
+from sqlmodel import SQLModel
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -14,19 +22,13 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# 追記
-from app.models.about import About
-from app.models.project import Project
-from app.models.skill import Skill
-from app.models.tech import Tech
-from sqlmodel import SQLModel
-from app.core.config import settings
-
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = SQLModel.metadata  # 修正
+
+# 変更
+target_metadata = SQLModel.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
