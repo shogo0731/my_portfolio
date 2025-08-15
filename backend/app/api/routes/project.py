@@ -1,11 +1,12 @@
 import os
 from glob import glob
 from fastapi import APIRouter, status, Form, UploadFile, HTTPException
-from app.models import (Message, Project, ProjectsPublic, ProjectPublic,
-                        ProjectCreate, ProjectUpdate)
+from app.api.routes.utils import create_upload_path
+from app.models import (Project, ProjectsPublic, ProjectPublic, ProjectCreate,
+                        ProjectUpdate)
 from app.crud import project as crud_project
 from app.api.deps import SessionDep
-from app.utils import err_mes_item_with_id_not_found, mes_delete_success
+from app.utils import err_mes_item_with_id_not_found
 
 router = APIRouter(prefix="/project", tags=["project"])
 
@@ -13,14 +14,6 @@ router = APIRouter(prefix="/project", tags=["project"])
 @router.get("/", response_model=ProjectsPublic, status_code=status.HTTP_200_OK)
 async def read_project(session: SessionDep):
     new_projects = crud_project.read_project(session)
-    return new_projects
-
-
-@router.get("/{project_id}",
-            response_model=ProjectPublic,
-            status_code=status.HTTP_200_OK)
-async def read_project_with_id(session: SessionDep, project_id: str):
-    new_projects = crud_project.read_project(session, project_id)
     return new_projects
 
 
@@ -48,13 +41,10 @@ async def update_project(session: SessionDep, project_id: str,
     return updated_project
 
 
-@router.delete("/{project_id}",
-               response_model=Message,
-               status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_project(session: SessionDep, project_id: str):
     crud_project.delete_project(session, project_id)
-    return Message(
-        message=mes_delete_success(Project.__tablename__, project_id))
+    return
 
 
 @router.post("/{project_id}/image",
@@ -70,17 +60,17 @@ async def create_project_iamge(session: SessionDep,
     ext = os.path.splitext(ufile.filename)[1]
 
     # ファイルに書き込む
-    upload_path = f'./uploads/image/project/{project_id}{ext}'
+    upload_path = create_upload_path("project", project_id, ext)
     with open(upload_path, 'wb') as f:
         f.write(bf)
 
     # 画像パスの情報を更新するデータを取得
-    old_project = crud_project.read_project(session, project_id)
+    old_project: Project = crud_project.read_project(session, project_id)
     old_project.image_path = upload_path
     session.add(old_project)
     session.commit()
     session.refresh(old_project)
-    return old_project
+    return ProjectPublic.model_validate(old_project)
 
 
 @router.put("/{project_id}/image",
@@ -96,7 +86,7 @@ async def update_project_image(session: SessionDep,
     ext = os.path.splitext(ufile.filename)[1]
 
     # ファイルに書き込む
-    upload_path = f'./uploads/image/project/{project_id}{ext}'
+    upload_path = create_upload_path("project", project_id, ext)
     with open(upload_path, 'wb') as f:
         f.write(bf)
 
@@ -109,12 +99,10 @@ async def update_project_image(session: SessionDep,
     return old_project
 
 
-@router.delete("/{project_id}/image",
-               response_model=Message,
-               status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{project_id}/image", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_project_image(session: SessionDep, project_id: str):
     # project_idから該当ファイルを取得
-    img_pattern = f'./uploads/image/project/{project_id}.*'
+    img_pattern = f'/backend/uploads/image/project/{project_id}.*'
     img_path_lst = glob(img_pattern)
 
     # パターンにマッチする画像が一つかどうか確認。違う場合はエラーを起こす
@@ -138,5 +126,4 @@ async def delete_project_image(session: SessionDep, project_id: str):
     old_project.image_path = None
     session.add(old_project)
     session.commit()
-    session.refresh(old_project)
-    return Message(message=mes_delete_success("project image", project_id))
+    return

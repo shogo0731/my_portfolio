@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException, status
 from app.api.deps import SessionDep
-from app.models import (Message, Skill, SkillCreate, SkillUpdate, SkillsPublic,
+from app.models import (Skill, SkillCreate, SkillUpdate, SkillsPublic,
                         SkillPublic)
 from app.crud import skill as crud_skill
-from app.utils import err_mes_item_with_id_not_found, mes_delete_success
+from app.utils import err_mes_item_with_id_not_found
 
 router = APIRouter(prefix="/skill", tags=["skill"])
 
@@ -36,9 +36,7 @@ async def update_skill(session: SessionDep, skill_id: str,
     return updated_skill
 
 
-@router.delete("/{skill_id}",
-               response_model=Message,
-               status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{skill_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_skill(session: SessionDep, skill_id: str):
     crud_skill.delete_skill(session, skill_id)
-    return Message(message=mes_delete_success(Skill.__tablename__, skill_id))
+    return

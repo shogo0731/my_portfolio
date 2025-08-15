@@ -1,5 +1,6 @@
 import os
 from fastapi import APIRouter, status, Form, UploadFile
+from app.api.routes.utils import create_upload_path
 from app.models import AboutPublic, AboutCreate, AboutUpdate
 from app.api.deps import SessionDep
 from app.crud import about as crud_about
@@ -16,8 +17,8 @@ async def read_about(session: SessionDep):
 @router.post("/",
              response_model=AboutPublic,
              status_code=status.HTTP_201_CREATED)
-async def create_about(about: AboutCreate, session: SessionDep):
-    new_about = crud_about.create_about(session, about)
+async def create_about(session: SessionDep, about_in: AboutCreate):
+    new_about = crud_about.create_about(session, about_in)
     return new_about
 
 
@@ -42,7 +43,7 @@ async def create_about_image(session: SessionDep,
     ext = os.path.splitext(ufile.filename)[1]
 
     # ファイルに書き込む
-    upload_path = f'./uploads/image/about/{about_id}{ext}'
+    upload_path = create_upload_path("about", about_id, ext)
     with open(upload_path, 'wb') as f:
         f.write(bf)
 
@@ -68,7 +69,7 @@ async def update_about_image(session: SessionDep,
     ext = os.path.splitext(ufile.filename)[1]
 
     # ファイルに書き込む
-    upload_path = f'./uploads/image/about/{about_id}{ext}'
+    upload_path = create_upload_path("about", about_id, ext)
     with open(upload_path, 'wb') as f:
         f.write(bf)
 

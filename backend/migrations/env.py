@@ -7,11 +7,7 @@ from alembic import context
 
 # 追記
 from app.core.config import settings
-from app.models.about import About
-from app.models.project import Project
-from app.models.skill import Skill
-from app.models.tech import Tech
-from sqlmodel import SQLModel
+from app.models import SQLModel
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

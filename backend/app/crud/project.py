@@ -1,25 +1,19 @@
+from uuid import UUID
 from sqlmodel import select, Session
 from fastapi import HTTPException, status
-from app.models import (Project, ProjectCreate, ProjectsPublic, ProjectPublic,
-                        ProjectUpdate)
+from app.models import (Project, ProjectCreate, ProjectsPublic, ProjectUpdate)
 from app.models import Tech
 from app.utils import err_mes_item_with_id_not_found
 
 
-def read_project(session: Session, project_id=None):
+def read_project(session: Session, project_id: UUID = None):
     if project_id:
-        project: ProjectPublic = session.get(Project, project_id)
+        project = session.get(Project, project_id)
         if not project:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                                 detail=err_mes_item_with_id_not_found(
                                     Project.__tablename__, project_id))
-        return ProjectPublic(project_id=project.project_id,
-                             title=project.title,
-                             description=project.description,
-                             image_path=project.image_path,
-                             live_demo_url=project.live_demo_url,
-                             github_url=project.github_url,
-                             techs=project.techs)
+        return project
 
     statement = select(Project)
     projects = session.exec(statement).all()
@@ -29,8 +23,8 @@ def read_project(session: Session, project_id=None):
 def create_projct(session: Session, project_in: ProjectCreate):
     new_project = Project(title=project_in.title,
                           description=project_in.description,
-                          live_demo_url=project_in.live_demo_url,
-                          github_url=project_in.github_url,
+                          live_demo_url=str(project_in.live_demo_url),
+                          github_url=str(project_in.github_url),
                           techs=[
                               Tech(tech=project_in_tech)
                               for project_in_tech in project_in.techs
@@ -45,8 +39,8 @@ def update_project(session: Session, old_project: Project,
                    project_in: ProjectUpdate):
     old_project.title = project_in.title
     old_project.description = project_in.description
-    old_project.live_demo_url = project_in.live_demo_url
-    old_project.github_url = project_in.github_url
+    old_project.live_demo_url = str(project_in.live_demo_url)
+    old_project.github_url = str(project_in.github_url)
     old_project.techs = [
         Tech(tech=project_in_tech) for project_in_tech in project_in.techs
     ]

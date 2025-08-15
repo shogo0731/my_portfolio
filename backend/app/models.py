@@ -1,6 +1,7 @@
+from datetime import datetime
 from typing import Optional
 from uuid import UUID, uuid4
-from pydantic import NewPath
+from pydantic import FilePath, HttpUrl
 from sqlmodel import Field, Relationship, SQLModel
 
 
@@ -21,9 +22,10 @@ class AboutUpdate(AboutBase):
 
 # getのレスポンスの型
 class AboutPublic(AboutBase):
-    about_id: UUID = Field(default_factory=lambda: str(uuid4()),
-                           primary_key=True)
-    image_path: Optional[NewPath] = None
+    about_id: UUID = Field(primary_key=True)
+    image_path: Optional[FilePath]
+    created_at: datetime
+    updated_at: datetime
 
 
 # データベースのAboutテーブルの型
@@ -31,13 +33,17 @@ class About(AboutBase, table=True):
     about_id: UUID = Field(default_factory=lambda: str(uuid4()),
                            primary_key=True)
     image_path: Optional[str] = Field(default=None, nullable=True)
+    created_at: datetime = Field(default_factory=datetime.now, nullable=False)
+    updated_at: datetime = Field(default_factory=datetime.now,
+                                 nullable=False,
+                                 sa_column_kwargs={'onupdate': datetime.now})
 
 
 class ProjectBase(SQLModel):
     title: str
     description: str
-    live_demo_url: Optional[str]
-    github_url: Optional[str]
+    live_demo_url: Optional[HttpUrl]
+    github_url: Optional[HttpUrl]
 
 
 class ProjectCreate(ProjectBase):
@@ -49,10 +55,11 @@ class ProjectUpdate(ProjectBase):
 
 
 class ProjectPublic(ProjectBase):
-    project_id: UUID = Field(default_factory=lambda: str(uuid4()),
-                             primary_key=True)
-    image_path: Optional[str] = None
+    project_id: UUID = Field(primary_key=True)
+    image_path: Optional[FilePath]
     techs: list["Tech"]
+    created_at: datetime
+    updated_at: datetime
 
 
 class ProjectsPublic(SQLModel):
@@ -67,6 +74,10 @@ class Project(ProjectBase, table=True):
     github_url: Optional[str] = Field(default=None, nullable=True)
     techs: list["Tech"] = Relationship(back_populates='project',
                                        cascade_delete=True)
+    created_at: datetime = Field(default_factory=datetime.now, nullable=False)
+    updated_at: datetime = Field(default_factory=datetime.now,
+                                 nullable=False,
+                                 sa_column_kwargs={'onupdate': datetime.now})
 
 
 class SkillBase(SQLModel):
@@ -84,8 +95,9 @@ class SkillUpdate(SkillBase):
 
 
 class SkillPublic(SkillBase):
-    skill_id: UUID = Field(default_factory=lambda: str(uuid4()),
-                           primary_key=True)
+    skill_id: UUID = Field(primary_key=True)
+    created_at: datetime
+    updated_at: datetime
 
 
 class SkillsPublic(SQLModel):
@@ -95,6 +107,10 @@ class SkillsPublic(SQLModel):
 class Skill(SkillBase, table=True):
     skill_id: UUID = Field(default_factory=lambda: str(uuid4()),
                            primary_key=True)
+    created_at: datetime = Field(default_factory=datetime.now, nullable=False)
+    updated_at: datetime = Field(default_factory=datetime.now,
+                                 nullable=False,
+                                 sa_column_kwargs={'onupdate': datetime.now})
 
 
 class TechBase(SQLModel):
@@ -108,8 +124,3 @@ class Tech(TechBase, table=True):
                              default=None,
                              ondelete="CASCADE")
     project: "Project" = Relationship(back_populates='techs')
-
-
-# apiのレスポンス用に定義
-class Message(SQLModel):
-    messsage: str

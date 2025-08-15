@@ -1,10 +1,11 @@
-from sqlmodel import Session, select
+from uuid import UUID
+from sqlmodel import Session, select, desc
 from app.models import About, AboutCreate, AboutUpdate
 from fastapi import HTTPException, status
 from app.utils import err_mes_item_with_id_not_found
 
 
-def read_about(session: Session, about_id: str = None):
+def read_about(session: Session, about_id: UUID = None):
     # about_idが指定された場合
     if about_id:
         about = session.get(About, about_id)
@@ -17,14 +18,13 @@ def read_about(session: Session, about_id: str = None):
         return about
 
     # about_idが指定されていない場合、最新のaboutを取り出す
-    statement = select(About)
+    statement = select(About).order_by(desc(About.updated_at))
     about = session.exec(statement).first()
 
     # aboutが存在しない場合エラーを起こす
     if not about:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=err_mes_item_with_id_not_found(
-                                About.__tablename__, about_id))
+                            detail="project was not found")
     return about
 
 
